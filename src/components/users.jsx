@@ -23,7 +23,7 @@ const Users = () => {
     return(
         <>
         <h2><span className={changeColorSpan(users.length)}>{renderPhrase(users.length)}</span></h2>
-        {users.length !== 0 && <table className="table">
+        {users.length > 0 && <table className="table">
   <thead>
     <tr>
       <th scope="col">Имя</th>
