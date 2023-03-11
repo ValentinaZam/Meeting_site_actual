@@ -19,13 +19,11 @@ const Users = () => {
         return number === 0? "Никто с тобой не тусанёт" : (number<5 && number>1) ? `${number} человека тусанёт с тобой сегодня`: `${number} человек тусанёт с тобой сегодня`
     };
 
-    if(users.length === 0){
-        return <h2><span className={changeColorSpan(users.length)}>{renderPhrase(users.length)}</span></h2>
-    }
+    
     return(
         <>
         <h2><span className={changeColorSpan(users.length)}>{renderPhrase(users.length)}</span></h2>
-        <table className="table">
+        {users.length !== 0 && <table className="table">
   <thead>
     <tr>
       <th scope="col">Имя</th>
@@ -54,9 +52,13 @@ const Users = () => {
             </tr>))
         }
   </tbody>
-</table>
-        </>
-    );
+</table> 
 }
+        </>
+    
+    );
+
+}
+
 
 export default Users
