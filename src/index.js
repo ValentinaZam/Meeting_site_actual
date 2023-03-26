@@ -1,15 +1,12 @@
 import React from "react";
-import ReactDOM from "react-dom";
+import * as ReactDOMClient from "react-dom/client";
 import "bootstrap/dist/css/bootstrap.css";
-import Users from "./components/users";
+import Users from "./app/components/users";
 import "./index.css";
 import reportWebVitals from "./reportWebVitals";
+import App from "./app/App";
 
-// const root = ReactDOM.createRoot(document.getElementById("root"));
-ReactDOM.render(
-  <>
-    <Users />
-  </>,
-  document.getElementById("root")
-);
-reportWebVitals();
+const root = ReactDOMClient.createRoot(document.getElementById("root"));
+root.render(<App />);
+
+// reportWebVitals();
