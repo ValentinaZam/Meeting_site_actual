@@ -14,7 +14,7 @@ function App() {
     <>
       <SearchStatus length={users.length} />
 
-      {users.length > 0 && <Users />}
+      {users.length > 0 && <Users users={users} />}
     </>
   );
 }
