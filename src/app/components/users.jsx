@@ -1,28 +1,9 @@
-import React, { useState } from 'react'
-import api from "../../api"
+import React from 'react';
+import User from './user';
 
-const Users = (users, setUsers) => {
-
-    // const [users, setUsers] = useState(api.users.fetchAll());
-
-    // const changeColorSpan = (number) => {
-    //     let badge = "badge m-2 "
-    //     return badge += number === 0 ? "bg-danger" : "bg-primary"
-    // }
-
-    const handleDelete = (userId) => {
-        setUsers(prevState => prevState.filter(tag => tag !== userId))
-    };
-
-    // const renderPhrase = (number) => {
-
-    //     return number === 0 ? "Никто с тобой не тусанёт" : (number < 5 && number > 1) ? `${number} человека тусанёт с тобой сегодня` : `${number} человек тусанёт с тобой сегодня`
-    // };
-
-
+const Users = ({ users, onDelete }) => {
     return (
         <>
-            {/* <h2><span className={changeColorSpan(users.length)}>{renderPhrase(users.length)}</span></h2> */}
             {users.length > 0 && <table className="table">
                 <thead>
                     <tr>
@@ -35,30 +16,12 @@ const Users = (users, setUsers) => {
                     </tr>
                 </thead>
                 <tbody>
-                    {
-                        users.map((item) => (<tr key={item._id}>
-                            <td scope="row">{item.name}</td>
-
-                            <td>
-                                {item.qualities.map((elem) => (
-                                    <div key={elem._id} className={"badge m-1 bg-" + elem.color}> {elem.name} </div>
-                                ))}
-                            </td>
-
-                            <td>{item.profession.name}</td>
-                            <td>{item.completedMeetings}</td>
-                            <td>{`${item.rate} / 5`}</td>
-                            <td><button className='btn btn-danger' onClick={() => handleDelete(item)}>delete</button></td>
-                        </tr>))
-                    }
+                    {users.map((user) => (<User key={user._id} user={user} onDelete={onDelete} />))}
                 </tbody>
             </table>
             }
         </>
-
     );
-
 }
-
 
 export default Users
