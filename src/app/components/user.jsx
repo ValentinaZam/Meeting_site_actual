@@ -1,24 +1,44 @@
-import React, { useState } from "react";
-import Bookmark from "./bookmark";
-import Qualities from "./qualities";
-
-const User = ({ user, onDelete, handleToggle }) => {
+import React from "react";
+import Qualitie from "./qualitie";
+import BookMark from "./bookmark";
+const User = ({
+    _id,
+    name,
+    qualities,
+    profession,
+    completedMeetings,
+    rate,
+    onDelete,
+    bookmark,
+    onToggleBookMark,
+}) => {
     return (
-        <tr key={user._id}>
-            <td scope="row">{user.name}</td>
-
+        <tr>
+            <td>{name}</td>
             <td>
-                {user.qualities.map((elem) => (<Qualities key={elem._id} color={elem.color} id={elem._id} name={elem.name} />))}
+                {qualities.map((qual) => (
+                    <Qualitie key={qual._id} {...qual} />
+                ))}
             </td>
-
-            <td>{user.profession.name}</td>
-            <td>{user.completedMeetings}</td>
-            <td>{`${user.rate} / 5`}</td>
+            <td>{profession.name}</td>
+            <td>{completedMeetings}</td>
+            <td>{rate} /5</td>
             <td>
-                <Bookmark key={user._id} status={user.bookmark} onClick={handleToggle} id={user._id} />
+                <BookMark
+                    status={bookmark}
+                    onClick={() => onToggleBookMark(_id)}
+                />
             </td>
-            <td><button className='btn btn-danger' onClick={() => onDelete(user._id)}>delete</button></td>
+            <td>
+                <button
+                    onClick={() => onDelete(_id)}
+                    className="btn btn-danger"
+                >
+                    delete
+                </button>
+            </td>
         </tr>
-    )
-}
-export default User
+    );
+};
+
+export default User;
