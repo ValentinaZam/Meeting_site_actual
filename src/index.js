@@ -14,10 +14,4 @@ root.render(
     </>
 );
 
-// ReactDOMClient.createRoot(
-//   document.getElementById("root"),
-//   <>
-//     <App />
-//   </>
-// );
 reportWebVitals();
