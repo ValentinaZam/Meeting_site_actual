@@ -1,32 +1,28 @@
-import React, { useState } from "react";
-import Users from "./components/users";
-import API from "../api";
+import React, { useState, useEffect } from "react"
+import Users from "./components/users"
+import API from "../api"
 
 function App() {
-    const [users, setUsers] = useState(API.users.fetchAll());
+    const [users, setUsers] = useState()
+
+    useEffect(() => {
+        API.users.fetchAll().then((data) => setUsers(data))
+    }, [])
+
     const handleDelete = (userId) => {
-        setUsers(users.filter((user) => user._id !== userId));
-    };
+        setUsers(users.filter((user) => user._id !== userId))
+    }
     const handleToggleBookMark = (id) => {
         setUsers(
             users.map((user) => {
                 if (user._id === id) {
-                    return { ...user, bookmark: !user.bookmark };
+                    return { ...user, bookmark: !user.bookmark }
                 }
-                return user;
+                return user
             })
-        );
-        console.log(id);
-    };
-    return (
-        <div>
-            <Users
-                onDelete={handleDelete}
-                onToggleBookMark={handleToggleBookMark}
-                users={users}
-            />
-        </div>
-    );
+        )
+    }
+    return <div>{users && <Users onDelete={handleDelete} onToggleBookMark={handleToggleBookMark} users={users} />}</div>
 }
 
-export default App;
+export default App
