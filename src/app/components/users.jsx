@@ -13,6 +13,7 @@ const Users = ({ users: allUsers, ...rest }) => {
     const [selectorProf, setSelectorProf] = useState();
 
     const pageSize = 4;
+
     useEffect(() => {
         API.professions.fetchAll().then((data) => setProfessions(data));
     }, []);
@@ -28,6 +29,7 @@ const Users = ({ users: allUsers, ...rest }) => {
     const handlePageChange = (pageIndex) => {
         setCurrentPage(pageIndex);
     };
+
     const filteredUsers = selectorProf
         ? allUsers.filter((user) => user.profession === selectorProf)
         : allUsers;

@@ -6,7 +6,6 @@ import reportWebVitals from "./reportWebVitals";
 import App from "./app/App";
 
 const root = ReactDOMClient.createRoot(document.getElementById("root"));
-// root.render(<App />);
 
 root.render(
     <>
