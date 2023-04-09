@@ -12,11 +12,10 @@ module.exports = {
     plugins: ["react"],
     rules: {
         indent: ["error", 4],
-        semi: [2, "always"],
+        quotes: ["error", "double", { allowTemplateLiterals: true }],
         "space-before-function-paren": [
             "error",
             { anonymous: "always", named: "never" }
-        ],
-        quotes: ["error", "double", { allowTemplateLiterals: true }]
+        ]
     }
 };
