@@ -10,10 +10,10 @@ const TableHeader = ({ onSort, selectedSort, columns }) => {
             onSort({ path: item, order: "asc" })
         }
     }
+
     const markingSort = (item) => {
-        if (selectedSort.path === undefined) {
-            return ""
-        } else if (selectedSort.path === item) {
+        console.log(selectedSort.path)
+        if (selectedSort.path && selectedSort.path === item) {
             return (<i className={"bi bi-caret-" + (selectedSort.order === "asc" ? "up-fill" : "down-fill")}></i>)
         }
     }
