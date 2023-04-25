@@ -1,91 +1,110 @@
 import React, { useState, useEffect } from "react"
+import PropTypes from "prop-types"
 import { paginate } from "../utils/paginate"
 import Pagination from "./pagination"
-import API from "../../api"
-import PropTypes from "prop-types"
+import api from "../../api"
 import GroupList from "./groupList"
 import SearchStatus from "./searchStatus"
 import UserTable from "./usersTable"
 import _ from "lodash"
-
 const Users = () => {
     const [currentPage, setCurrentPage] = useState(1)
-    const [professions, setProfessions] = useState()
-    const [selectеdProf, setSelectеdProf] = useState()
-    const [sortBy, setSortBy] = useState({ iter: "name", order: "asc" })
-    const pageSize = 5
+    const [professions, setProfession] = useState()
+    const [selectedProf, setSelectedProf] = useState()
+    const [sortBy, setSortBy] = useState({ path: "name", order: "asc" })
+    const pageSize = 8
 
     const [users, setUsers] = useState()
-
     useEffect(() => {
-        API.users.fetchAll().then((data) => setUsers(data))
+        api.users.fetchAll().then((data) => setUsers(data))
     }, [])
-
     const handleDelete = (userId) => {
         setUsers(users.filter((user) => user._id !== userId))
     }
     const handleToggleBookMark = (id) => {
-        setUsers(
-            users.map((user) => {
-                if (user._id === id) {
-                    return { ...user, bookmark: !user.bookmark }
-                }
-                return user
-            })
-        )
+        const newArray = users.map((user) => {
+            if (user._id === id) {
+                return { ...user, bookmark: !user.bookmark }
+            }
+            return user
+        })
+        setUsers(newArray)
     }
 
     useEffect(() => {
-        API.professions.fetchAll().then((data) => setProfessions(data))
+        api.professions.fetchAll().then((data) => setProfession(data))
     }, [])
 
     useEffect(() => {
         setCurrentPage(1)
-    }, [selectеdProf])
+    }, [selectedProf])
 
-    const handleProfessionsSelect = item => {
-        setSelectеdProf(item)
+    const handleProfessionSelect = (item) => {
+        setSelectedProf(item)
     }
 
     const handlePageChange = (pageIndex) => {
         setCurrentPage(pageIndex)
     }
-
     const handleSort = (item) => {
         setSortBy(item)
     }
 
+    useEffect(() => {
+        if (users) {
+            const filteredUsers = selectedProf
+                ? users.filter(
+                    (user) =>
+                        JSON.stringify(user.profession) === JSON.stringify(selectedProf)
+                )
+                : users
+            const usersCrop = paginate(filteredUsers, currentPage, pageSize)
+            if (usersCrop.length === 0 && currentPage > 1) {
+                setCurrentPage(currentPage - 1)
+            }
+        }
+    }, [users])
+
     if (users) {
-        const filteredUsers = selectеdProf
-            ? users.filter((user) => user.profession._id === selectеdProf._id)
+        const filteredUsers = selectedProf
+            ? users.filter(
+                (user) =>
+                    JSON.stringify(user.profession) === JSON.stringify(selectedProf)
+            )
             : users
 
         const count = filteredUsers.length
         const sortedUsers = _.orderBy(filteredUsers, [sortBy.path], [sortBy.order])
-        const userCrop = paginate(sortedUsers, currentPage, pageSize)
-
+        const usersCrop = paginate(sortedUsers, currentPage, pageSize)
         const clearFilter = () => {
-            setSelectеdProf()
+            setSelectedProf()
         }
 
         return (
             <div className="d-flex">
-
                 {professions && (
                     <div className="d-flex flex-column flex-shrink-0 p-3">
-                        <GroupList selectedItem={selectеdProf} items={professions}
-                            onItemSelect={handleProfessionsSelect} />
-                        <button className="btn btn-secondary mt-2" onClick={clearFilter}>Oчистить</button>
+                        <GroupList
+                            selectedItem={selectedProf}
+                            items={professions}
+                            onItemSelect={handleProfessionSelect}
+                        />
+                        <button className="btn btn-secondary mt-2" onClick={clearFilter}>
+                            {" "}
+                            Очистить
+                        </button>
                     </div>
                 )}
                 <div className="d-flex flex-column">
                     <SearchStatus length={count} />
                     {count > 0 && (
-                        <UserTable users={userCrop}
+                        <UserTable
+                            users={usersCrop}
                             onSort={handleSort}
                             selectedSort={sortBy}
                             onDelete={handleDelete}
-                            onToggleBookMark={handleToggleBookMark} />
+                            onToggleBookMark={handleToggleBookMark}
+                        />
                     )}
                     <div className="d-flex justify-content-center">
                         <Pagination
@@ -97,14 +116,12 @@ const Users = () => {
                     </div>
                 </div>
             </div>
-
         )
     }
-    return "Loading"
+    return "loading..."
 }
-
 Users.propTypes = {
-    users: PropTypes.array.isRequired
+    users: PropTypes.array
 }
 
 export default Users
