@@ -13,17 +13,27 @@ const UserPage = ({ match }) => {
     const handleReturn = () => {
         history.push("/users")
     }
-
-    return <>{userInfo && (<>
-        <h1>{userInfo.name}</h1>
-        <h2>Профессия: {userInfo.profession.name}</h2>
-        <span><QualitiesList qualities={userInfo.qualities} /></span>
-        <div>completedMeeting: {userInfo.completedMeetings}</div>
-        <h2>Rate: {userInfo.rate}</h2>
-        <button onClick={handleReturn}>Все пользователи</button>
-    </>
-    )}
-    </>
+    // return <>{userInfo && (<>
+    //     <h1>{userInfo.name}</h1>
+    //     <h2>Профессия: {userInfo.profession.name}</h2>
+    //     <span><QualitiesList qualities={userInfo.qualities} /></span>
+    //     <div>completedMeeting: {userInfo.completedMeetings}</div>
+    //     <h2>Rate: {userInfo.rate}</h2>
+    //     <button onClick={handleReturn}>Все пользователи</button>
+    // </>
+    // )}
+    // </>
+    if (userInfo) {
+        return (<>
+            <h1>{userInfo.name}</h1>
+            <h2>Профессия: {userInfo.profession.name}</h2>
+            <span><QualitiesList qualities={userInfo.qualities} /></span>
+            <div>completedMeeting: {userInfo.completedMeetings}</div>
+            <h2>Rate: {userInfo.rate}</h2>
+            <button onClick={handleReturn}>Все пользователи</button>
+        </>)
+    }
+    return "Loading..."
 }
 UserPage.propTypes = {
     match: PropTypes.object.isRequired
