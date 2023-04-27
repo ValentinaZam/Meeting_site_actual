@@ -3,7 +3,6 @@ import Users from "./components/users"
 import { Route, Switch } from "react-router-dom"
 import Main from "./components/main"
 import Login from "./components/login"
-// import api from "../api"
 import UserPage from "./components/userPage"
 import NavBar from "./components/navBar"
 
