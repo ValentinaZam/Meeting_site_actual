@@ -7,7 +7,7 @@ import GroupList from "./groupList"
 import SearchStatus from "./searchStatus"
 import UserTable from "./usersTable"
 import _ from "lodash"
-const Users = () => {
+const UsersList = () => {
     const [currentPage, setCurrentPage] = useState(1)
     const [professions, setProfession] = useState()
     const [selectedProf, setSelectedProf] = useState()
@@ -30,11 +30,9 @@ const Users = () => {
         })
         setUsers(newArray)
     }
-
     useEffect(() => {
         api.professions.fetchAll().then((data) => setProfession(data))
     }, [])
-
     useEffect(() => {
         setCurrentPage(1)
     }, [selectedProf])
@@ -120,8 +118,8 @@ const Users = () => {
     }
     return "loading..."
 }
-Users.propTypes = {
+UsersList.propTypes = {
     users: PropTypes.array
 }
 
-export default Users
+export default UsersList
