@@ -6,7 +6,7 @@ import api from "../../api"
 import GroupList from "./groupList"
 import SearchStatus from "./searchStatus"
 import UserTable from "./usersTable"
-
+import SearchLine from "./searchLine"
 import _ from "lodash"
 const UsersList = () => {
     const [currentPage, setCurrentPage] = useState(1)
@@ -17,9 +17,9 @@ const UsersList = () => {
     const [users, setUsers] = useState()
     const [searchText, setSearchText] = useState("")
 
-    const handleChangeSearch = ({ target }) => {
-        setSelectedProf({})
-        setSearchText(target.value)
+    const handleChangeSearch = (e) => {
+        setSelectedProf()
+        setSearchText(e.target.value)
     }
 
     useEffect(() => {
@@ -119,9 +119,7 @@ const UsersList = () => {
                 )}
                 <div className="d-flex flex-column">
                     <SearchStatus length={count} />
-                    <form>
-                        <input type="text" placeholder="Search..." className="form-control" value={searchText} onChange={handleChangeSearch} />
-                    </form>
+                    <SearchLine text={searchText} onChangeSearch={handleChangeSearch} />
                     {count > 0 && (
                         <UserTable
                             users={usersCrop}

@@ -1,22 +1,14 @@
-import React, { useState } from "react"
-// import PropTypes from "prop-types"
+import React from "react"
+import PropTypes from "prop-types"
 
-const SearchLine = () => {
-    const [searchText, setSearchText] = useState("")
-    // useEffect(() => {
-    //     setSearchText()
-    // }, [searchText])
-
-    const handleChangeSearch = ({ target }) => {
-        setSearchText(target.value)
-        console.log(target.value)
-    }
-
+const SearchLine = ({ text, onChangeSearch }) => {
     return (<form>
-        <input type="text" placeholder="Search..." className="form-control" value={searchText} onChange={handleChangeSearch} />
+        <input type="text" placeholder="Search..." className="form-control" value={text} onChange={(e) => onChangeSearch(e)} />
     </form>)
 }
-// SearchLine.propTypes = {
-//     usersName: PropTypes.string
-// }
+SearchLine.propTypes = {
+    text: PropTypes.string,
+    onChangeSearch: PropTypes.func
+}
+
 export default SearchLine
