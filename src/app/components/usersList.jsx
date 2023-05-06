@@ -6,30 +6,21 @@ import api from "../../api"
 import GroupList from "./groupList"
 import SearchStatus from "./searchStatus"
 import UserTable from "./usersTable"
-import SearchLine from "./searchLine"
 import _ from "lodash"
 const UsersList = () => {
     const [currentPage, setCurrentPage] = useState(1)
     const [professions, setProfession] = useState()
+    const [searchQuery, setSearchQuery] = useState("")
     const [selectedProf, setSelectedProf] = useState()
     const [sortBy, setSortBy] = useState({ path: "name", order: "asc" })
-    const pageSize = 6
+    const pageSize = 8
     const [users, setUsers] = useState()
-    const [searchText, setSearchText] = useState("")
-
-    const handleChangeSearch = (e) => {
-        setSelectedProf()
-        setSearchText(e.target.value)
-    }
-
     useEffect(() => {
         api.users.fetchAll().then((data) => setUsers(data))
     }, [])
-
     const handleDelete = (userId) => {
         setUsers(users.filter((user) => user._id !== userId))
     }
-
     const handleToggleBookMark = (id) => {
         const newArray = users.map((user) => {
             if (user._id === id) {
@@ -46,11 +37,15 @@ const UsersList = () => {
 
     useEffect(() => {
         setCurrentPage(1)
-    }, [selectedProf])
+    }, [selectedProf, searchQuery])
 
     const handleProfessionSelect = (item) => {
-        setSearchText("")
+        if (searchQuery !== "") setSearchQuery("")
         setSelectedProf(item)
+    }
+    const handleSearchQuery = ({ target }) => {
+        setSelectedProf(undefined)
+        setSearchQuery(target.value)
     }
 
     const handlePageChange = (pageIndex) => {
@@ -59,18 +54,6 @@ const UsersList = () => {
     const handleSort = (item) => {
         setSortBy(item)
     }
-
-    useEffect(() => {
-        if (users) {
-            const nameUsers = searchText
-                ? users.filter((user) => user.name.toLowerCase().includes(searchText))
-                : users
-            const usersCrop = paginate(nameUsers, currentPage, pageSize)
-            if (usersCrop.length === 0 && currentPage > 1) {
-                setCurrentPage(currentPage - 1)
-            }
-        }
-    }, [users])
 
     useEffect(() => {
         if (users) {
@@ -88,20 +71,25 @@ const UsersList = () => {
     }, [users])
 
     if (users) {
-        const filterUser =
-            searchText
-                ? users.filter((user) => user.name.toLowerCase().includes(searchText.toLowerCase()))
-                : selectedProf
-                    ? users.filter(
-                        (user) =>
-                            JSON.stringify(user.profession) === JSON.stringify(selectedProf))
-                    : users
-        const count = filterUser.length
-        const sortedUsers = (_.orderBy(filterUser, [sortBy.path], [sortBy.order]))
+        const filteredUsers = searchQuery
+            ? users.filter(
+                (user) =>
+                    user.name.toLowerCase().indexOf(searchQuery.toLowerCase()) !== -1
+            )
+            : selectedProf
+                ? users.filter(
+                    (user) =>
+                        JSON.stringify(user.profession) === JSON.stringify(selectedProf)
+                )
+                : users
+
+        const count = filteredUsers.length
+        const sortedUsers = _.orderBy(filteredUsers, [sortBy.path], [sortBy.order])
         const usersCrop = paginate(sortedUsers, currentPage, pageSize)
         const clearFilter = () => {
             setSelectedProf()
         }
+
         return (
             <div className="d-flex">
                 {professions && (
@@ -119,7 +107,13 @@ const UsersList = () => {
                 )}
                 <div className="d-flex flex-column">
                     <SearchStatus length={count} />
-                    <SearchLine text={searchText} onChangeSearch={handleChangeSearch} />
+                    <input
+                        type="text"
+                        name="searchQuery"
+                        placeholder="Search..."
+                        onChange={handleSearchQuery}
+                        value={searchQuery}
+                    />
                     {count > 0 && (
                         <UserTable
                             users={usersCrop}
