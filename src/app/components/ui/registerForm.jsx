@@ -5,9 +5,10 @@ import api from "../../../api"
 import SelectField from "../common/form/selectField"
 import RadioField from "../common/form/radioField"
 import MultiSelectField from "../common/form/multiSelectField"
+import CheckBoxField from "../common/form/checkBoxField"
 
 const RegisterForm = () => {
-    const [data, setData] = useState({ email: "", password: "", profession: "", sex: "male", qualities: [] })
+    const [data, setData] = useState({ email: "", password: "", profession: "", sex: "male", qualities: [], license: false })
     const [errors, setErrors] = useState({})
     const [professions, setProfession] = useState()
     const [qualities, setQualities] = useState({})
@@ -47,6 +48,11 @@ const RegisterForm = () => {
             isRequired: {
                 message: "Обязательно выберете профессию"
             }
+        },
+        license: {
+            isRequired: {
+                message: "Вы не можете использовать наш сервис без лицензионного соглашения"
+            }
         }
     }
 
@@ -83,7 +89,13 @@ const RegisterForm = () => {
                 value={data.password}
                 error={errors.password}
                 onChange={handleChange} />
-            <SelectField label="Выбери свою профессию" defaultOption="Choose..." options={professions} onChange={handleChange} error={errors.profession} value={data.profession} />
+            <SelectField label="Выбери свою профессию"
+                defaultOption="Choose..."
+                name="profession"
+                options={professions}
+                onChange={handleChange}
+                error={errors.profession}
+                value={data.profession} />
             <RadioField options={[
                 { name: "Male", value: "male" },
                 { name: "Female", value: "female" },
@@ -94,7 +106,13 @@ const RegisterForm = () => {
                 onChange={handleChange}
                 label="Выберете ваш пол"
             />
-            <MultiSelectField options={qualities} onChange={handleChange} name="qualities" label="Выберете ваши качества" />
+            <MultiSelectField
+                options={qualities}
+                onChange={handleChange}
+                name="qualities"
+                label="Выберете ваши качества"
+                defaultValue={data.qualities} />
+            <CheckBoxField value={data.license} onChange={handleChange} name="license" error={errors.license}>Подтвердить <a>лицензионное соглашение</a></CheckBoxField>
             <button type="submit" disabled={!isValid} className="btn btn-primary w-100 mx-auto">Submit</button>
         </form>
 
