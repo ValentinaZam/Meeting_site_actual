@@ -1,16 +1,17 @@
-import React, { useEffect } from "react";
-import { orderBy } from "lodash";
+import React, { useEffect, useState } from "react"
+import { orderBy } from "lodash"
 import api from "../../../api"
-import { useParams } from "react-router";
-import CommentsList, { AddCommentForm } from "../common/comments"
+import { useParams } from "react-router"
+import AddCommentForm from "../common/comments/addCommentForm"
+import CommentsList from "../common/comments/commentsList"
 
 const Comments = () => {
-    const { userId } = useParams();
-    const [comments, setComments] = useState([]);
+    const { userId } = useParams()
+    const [comments, setComments] = useState([])
 
     useEffect(() => {
         api.comments.fetchCommentsForUser(userId)
-            .then((data) => setComments(data));
+            .then((data) => setComments(data))
     }, [])
 
     const handleSubmit = (data) => {
@@ -20,7 +21,7 @@ const Comments = () => {
 
     const handleRemoveComment = (id) => {
         api.comments.remove(id).then((id) => {
-            setComments(comments.filter((x) => x.id !== id))
+            setComments(comments.filter((x) => x._id !== id))
         })
     }
 
@@ -40,7 +41,7 @@ const Comments = () => {
                 <CommentsList comments={sortedComments} onRemove={handleRemoveComment} />
             </div>
         </div>)}
-    </>);
+    </>)
 }
 
-export default Comments;
+export default Comments
