@@ -1,27 +1,45 @@
-import React, { useEffect, useState } from "react"
-import { validator } from "../../utils/validator"
-import TextField from "../common/form/textField"
-import api from "../../../api"
-import SelectField from "../common/form/selectField"
-import RadioField from "../common/form/radioField"
-import MultiSelectField from "../common/form/multiSelectField"
-import CheckBoxField from "../common/form/checkBoxField"
+import React, { useEffect, useState } from "react";
+import { validator } from "../../utils/validator";
+import TextField from "../common/form/textField";
+import SelectField from "../common/form/selectField";
+import RadioField from "../common/form/radioField";
+import MultiSelectField from "../common/form/multiSelectField";
+import CheckBoxField from "../common/form/checkBoxField";
+import { useQualities } from "../../hooks/useQualities";
+import { useProfessions } from "../../hooks/useProfession";
+import { useAuth } from "../../hooks/useAuth";
+import { useHistory } from "react-router-dom";
 
 const RegisterForm = () => {
-    const [data, setData] = useState({ email: "", password: "", profession: "", sex: "male", qualities: [], license: false })
-    const [errors, setErrors] = useState({})
-    const [professions, setProfession] = useState()
-    const [qualities, setQualities] = useState({})
-
-    useEffect(() => {
-        api.professions.fetchAll().then((data) => setProfession(data))
-        api.qualities.fetchAll().then((data) => setQualities(data))
-    }, [])
+    const history = useHistory();
+    const [data, setData] = useState({
+        email: "",
+        password: "",
+        profession: "",
+        sex: "male",
+        name: "",
+        qualities: [],
+        licence: false
+    });
+    const { signUp } = useAuth();
+    const { qualities } = useQualities();
+    const qualitiesList = qualities.map((q) => ({
+        label: q.name,
+        value: q._id
+    }));
+    const { professions } = useProfessions();
+    const professionsList = professions.map((p) => ({
+        label: p.name,
+        value: p._id
+    }));
+    const [errors, setErrors] = useState({});
 
     const handleChange = (target) => {
-        setData((prevState) => ({ ...prevState, [target.name]: target.value }))
-    }
-
+        setData((prevState) => ({
+            ...prevState,
+            [target.name]: target.value
+        }));
+    };
     const validatorConfig = {
         email: {
             isRequired: {
@@ -31,12 +49,23 @@ const RegisterForm = () => {
                 message: "Email введен некорректно"
             }
         },
+        name: {
+            isRequired: {
+                message: "Имя обязательно для заполнения"
+            },
+            min: {
+                message: "Имя должно состоять минимум из 3 символов",
+                value: 3
+            }
+        },
         password: {
-            isRequired: { message: "Пароль обязателен для заполнения" },
+            isRequired: {
+                message: "Пароль обязателен для заполнения"
+            },
             isCapitalSymbol: {
                 message: "Пароль должен содержать хотя бы одну заглавную букву"
             },
-            isContain: {
+            isContainDigit: {
                 message: "Пароль должен содержать хотя бы одно число"
             },
             min: {
@@ -46,77 +75,111 @@ const RegisterForm = () => {
         },
         profession: {
             isRequired: {
-                message: "Обязательно выберете профессию"
+                message: "Обязательно выберите вашу профессию"
             }
         },
-        license: {
+        licence: {
             isRequired: {
-                message: "Вы не можете использовать наш сервис без лицензионного соглашения"
+                message:
+                    "Вы не можете использовать наш сервис без подтверждения лицензионного соглашения"
             }
         }
-    }
-
-    useEffect(() => { validate() }, [data])
-
+    };
+    useEffect(() => {
+        validate();
+    }, [data]);
     const validate = () => {
-        const errors = validator(data, validatorConfig)
-        setErrors(errors)
-        return Object.keys(errors).length === 0
-    }
+        const errors = validator(data, validatorConfig);
+        setErrors(errors);
+        return Object.keys(errors).length === 0;
+    };
+    const isValid = Object.keys(errors).length === 0;
 
-    const isValid = Object.keys(errors).length === 0
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const isValid = validate();
+        if (!isValid) return;
+        const newData = {
+            ...data,
+            qualities: data.qualities.map((q) => q.value)
+        };
 
-    const handleSubmit = (e) => {
-        e.preventDefault()
-        const isValid = validate()
-        if (!isValid) return
-        console.log(data)
-    }
+        try {
+            await signUp(newData);
+            history.push("/");
+        } catch (error) {
+            setErrors(error);
+        }
+    };
+
     return (
-
         <form onSubmit={handleSubmit}>
             <TextField
                 label="Электронная почта"
-                type="text"
                 name="email"
                 value={data.email}
+                onChange={handleChange}
                 error={errors.email}
-                onChange={handleChange} />
+            />
+            <TextField
+                label="Имя"
+                name="name"
+                value={data.name}
+                onChange={handleChange}
+                error={errors.name}
+            />
             <TextField
                 label="Пароль"
                 type="password"
                 name="password"
                 value={data.password}
-                error={errors.password}
-                onChange={handleChange} />
-            <SelectField label="Выбери свою профессию"
-                defaultOption="Choose..."
-                name="profession"
-                options={professions}
                 onChange={handleChange}
+                error={errors.password}
+            />
+            <SelectField
+                label="Выбери свою профессию"
+                defaultOption="Choose..."
+                options={professionsList}
+                name="profession"
+                onChange={handleChange}
+                value={data.profession}
                 error={errors.profession}
-                value={data.profession} />
-            <RadioField options={[
-                { name: "Male", value: "male" },
-                { name: "Female", value: "female" },
-                { name: "Other", value: "other" }
-            ]}
+            />
+            <RadioField
+                options={[
+                    { name: "Male", value: "male" },
+                    { name: "Female", value: "female" },
+                    { name: "Other", value: "other" }
+                ]}
                 value={data.sex}
                 name="sex"
                 onChange={handleChange}
-                label="Выберете ваш пол"
+                label="Выберите ваш пол"
             />
             <MultiSelectField
-                options={qualities}
+                options={qualitiesList}
                 onChange={handleChange}
+                defaultValue={data.qualities}
                 name="qualities"
-                label="Выберете ваши качества"
-                defaultValue={data.qualities} />
-            <CheckBoxField value={data.license} onChange={handleChange} name="license" error={errors.license}>Подтвердить <a>лицензионное соглашение</a></CheckBoxField>
-            <button type="submit" disabled={!isValid} className="btn btn-primary w-100 mx-auto">Submit</button>
+                label="Выберите ваши качества"
+            />
+            <CheckBoxField
+                value={data.licence}
+                onChange={handleChange}
+                name="licence"
+                error={errors.licence}
+            >
+                Подтвердить <a>лицензионное соглашение</a>
+            </CheckBoxField>
+            <button
+                className="btn btn-primary w-100 mx-auto"
+                type="submit"
+                disabled={!isValid}
+            >
+                Submit
+            </button>
         </form>
+    );
+};
 
-    )
-}
-
-export default RegisterForm
+export default RegisterForm;
