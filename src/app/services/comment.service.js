@@ -10,12 +10,13 @@ const commentService = {
         return data;
     },
     getComments: async (pageId) => {
-        const { data } = await httpService.get(commentEndpoint, {
-            params: {
-                orderBy: "pageId",
-                equalTo: `"${pageId}"`
-            }
-        });
+        const { data } = await httpService.get(commentEndpoint
+            // {params: {
+            //     // eslint-disable-next-line quotes
+            //     orderBy: '"pageId"',
+            //     equalTo: `"${pageId}"`
+            // }}
+        );
         return data;
     },
     removeComment: async (commentId) => {
