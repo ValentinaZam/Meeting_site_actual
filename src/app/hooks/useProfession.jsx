@@ -20,14 +20,8 @@ export const ProfessionProvider = ({ children }) => {
         }
     }, [error]);
 
-    useEffect(() => {
-        getProfessionsList();
-    }, []);
-    function errorCatcher(error) {
-        const { message } = error.response.data;
-        setError(message);
-    }
     function getProfession(id) {
+        console.log(id);
         return professions.find((p) => p._id === id);
     }
 
@@ -40,6 +34,14 @@ export const ProfessionProvider = ({ children }) => {
             errorCatcher(error);
         }
     }
+
+    useEffect(() => {
+        getProfessionsList();
+    }, []);
+    function errorCatcher(error) {
+        const { message } = error.response.data;
+        setError(message);
+    };
 
     return (
         <ProfessionContext.Provider
