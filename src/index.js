@@ -1,19 +1,25 @@
-import React from "react"
-import * as ReactDOMClient from "react-dom/client"
-import "bootstrap/dist/css/bootstrap.css"
-import "./index.css"
-import reportWebVitals from "./reportWebVitals"
-import App from "./app/App"
-import { BrowserRouter } from "react-router-dom"
+import React from "react";
+import ReactDOM from "react-dom";
+import "./index.css";
+import reportWebVitals from "./reportWebVitals";
+import "bootstrap/dist/css/bootstrap.css";
+import App from "./app/App";
+import { BrowserRouter } from "react-router-dom";
+import { createStore } from "./app/store/createStore";
+import { Provider } from "react-redux";
 
-const root = ReactDOMClient.createRoot(document.getElementById("root"))
+const store = createStore();
 
-root.render(
-    <BrowserRouter>
-        <React.StrictMode>
-            <App />
-        </React.StrictMode>
-    </BrowserRouter>
-)
+// eslint-disable-next-line react/no-deprecated
+ReactDOM.render(
+    <React.StrictMode>
+        <Provider store={store}>
+            <BrowserRouter>
+                <App />
+            </BrowserRouter>
+        </Provider>
+    </React.StrictMode>,
+    document.getElementById("root")
+);
 
-reportWebVitals()
+reportWebVitals();
