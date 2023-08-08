@@ -12,12 +12,11 @@ import {
     getProfessions,
     getProfessionsLoadingStatus
 } from "../../../store/professions";
-import { useAuth } from "../../../hooks/useAuth";
-import { getUsersList } from "../../../store/users";
+import { getCurrentUserId, getUsersList } from "../../../store/users";
 
 const UsersListPage = () => {
     const users = useSelector(getUsersList());
-    const { currentUser } = useAuth();
+    const currentUserId = useSelector(getCurrentUserId());
     // const { isLoading: professionsLoading, professions } = useProfessions();
     const professions = useSelector(getProfessions());
     const professionsLoading = useSelector(getProfessionsLoadingStatus());
@@ -78,7 +77,7 @@ const UsersListPage = () => {
                             JSON.stringify(selectedProf._id)
                     )
                     : data;
-            return filteredUsers.filter((u) => u._id !== currentUser._id);
+            return filteredUsers.filter((u) => u._id !== currentUserId);
         }
         const filteredUsers = filterUsers(users);
         const count = filteredUsers.length;
