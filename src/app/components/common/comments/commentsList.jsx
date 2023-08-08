@@ -8,7 +8,7 @@ const CommentsList = ({ comments, onRemove }) => {
     ));
 };
 CommentsList.propTypes = {
-    comment: PropTypes.array,
+    comments: PropTypes.array,
     onRemove: PropTypes.func
 };
 
