@@ -51,6 +51,7 @@ export const CommentsProvider = ({ children }) => {
         const { message } = error.response.data;
         setError(message);
     }
+
     async function removeComment(id) {
         try {
             const { content } = await commentService.removeComment(id);
