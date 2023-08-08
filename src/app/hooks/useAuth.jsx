@@ -12,7 +12,6 @@ export const httpAuth = axios.create({
     baseURL: "https://identitytoolkit.googleapis.com/v1/",
     params: {
         key: process.env.REACT_APP_FIREBASE_KEY
-        // key: "AIzaSyDiLVmzRm_eNOXkPJjP-W_ZJ831GBcWx_g"
     }
 });
 const AuthContext = React.createContext();
@@ -61,11 +60,9 @@ const AuthProvider = ({ children }) => {
         setUser(null);
         history.push("/");
     }
-
     function randomInt(min, max) {
         return Math.floor(Math.random() * (max - min + 1) + min);
     }
-
     async function updateUserData(data) {
         try {
             const { content } = await userService.update(data);
@@ -74,7 +71,6 @@ const AuthProvider = ({ children }) => {
             errorCatcher(error);
         }
     }
-
     async function signUp({ email, password, ...rest }) {
         try {
             const { data } = await httpAuth.post(`accounts:signUp`, {
@@ -146,7 +142,9 @@ const AuthProvider = ({ children }) => {
         }
     }, [error]);
     return (
-        <AuthContext.Provider value={{ signUp, logIn, currentUser, logOut, updateUserData }}>
+        <AuthContext.Provider
+            value={{ signUp, logIn, currentUser, logOut, updateUserData }}
+        >
             {!isLoading ? children : "Loading..."}
         </AuthContext.Provider>
     );
